@@ -1,42 +1,38 @@
 import Slideshow from "./components/Slideshow";
-import SlideshowControlls from "./components/SlideshowControlls";
-import { useEffect, useState } from "react";
+import SlideshowInterface from "./components/SlideshowInterface";
+import { useState } from "react";
+
 function App(props) {
-  const [currentProject, setCurrentProject] = useState(0);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const projects = props.projects;
+  const { projects, media, files } = props;
   const numberOfProjects = projects.length;
-  const numberOfSlidesArray = projects.map((project)=> project.slides.length)
-  const media = props.media;
-  const files = props.files;
-  function handleProjectChange(change) {
-    if (change === "next") {
-      setCurrentSlide((currentSlide + 1) % numberOfSlidesArray[currentProject]);
-    } else if (change === "prev") {
-      setCurrentSlide(Math.abs(currentSlide - 1) % numberOfSlidesArray[currentProject]);
-    }
+  const slidesPerProject = projects.map((project) => project.slides.length);
+  const [ProjectIndex, setProjectIndex] = useState(0);
+  const [SlideIndex, setSlideIndex] = useState(0);
+
+  function handleSlideChange(newSlideIndex) {
+    setSlideIndex(newSlideIndex);
   }
-  function handleSlideChange(change) {
-    if (change === "next") {
-      setCurrentProject((currentProject + 1) % numberOfProjects)
-    }else if(change ==="prev") {
-      setCurrentProject(Math.abs(currentProject - 1) % numberOfProjects);
-    }
+  function handleProjectChange(newProjectIndex) {
+    setProjectIndex(newProjectIndex);
   }
   return (
     <div>
       {
         <Slideshow
-          projectNumber={currentProject}
-          slideNumber={currentSlide}
+          projectIndex={ProjectIndex}
+          slideIndex={SlideIndex}
           projects={projects}
           media={media}
           files={files}
         />
       }
-      <SlideshowControlls
-        handleSlideChange={handleSlideChange}
+      <SlideshowInterface
+        projectIndex={ProjectIndex}
+        numberOfProjects={numberOfProjects}
         handleProjectChange={handleProjectChange}
+        slideIndex={SlideIndex}
+        slidesPerProject={slidesPerProject}
+        handleSlideChange={handleSlideChange}
       />
     </div>
   );

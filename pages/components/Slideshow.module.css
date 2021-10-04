@@ -1,4 +1,6 @@
-.container{
+.container {
+  display: flex;
+  width: fit-content;
 }
-.img{
-}
+
+/*# sourceMappingURL=Slideshow.module.css.map */

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./Slide.module.css";
+import styles from "./Slide.module.scss";
 function Slide(props) {
   return (
     <div className={styles.container}>
@@ -8,8 +8,7 @@ function Slide(props) {
         src={props.slideUrl}
         layout="fill"
         objectFit="cover"
-        width={props.width}
-        height={props.height}
+        alt="hello"
       />
     </div>
   );
