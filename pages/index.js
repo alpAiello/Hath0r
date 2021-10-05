@@ -3,12 +3,11 @@ import SlideshowInterface from "./components/SlideshowInterface";
 import { useState } from "react";
 
 function App(props) {
-  const { projects, media, files } = props;
+  const { projects, projects_clean, media, files } = props;
   const numberOfProjects = projects.length;
   const slidesPerProject = projects.map((project) => project.slides.length);
   const [ProjectIndex, setProjectIndex] = useState(0);
   const [SlideIndex, setSlideIndex] = useState(0);
-
   function handleSlideChange(newSlideIndex) {
     setSlideIndex(newSlideIndex);
   }
@@ -17,14 +16,14 @@ function App(props) {
   }
   return (
     <div>
-      {
-        <Slideshow
-          projectIndex={ProjectIndex}
-          slideIndex={SlideIndex}
-          projects={projects}
-          media={media}
-          files={files}
-        />
+      <Slideshow
+        projectIndex={ProjectIndex}
+        slideIndex={SlideIndex}
+        projects_clean={projects_clean}
+        projects={projects}
+        media={media}
+        files={files}
+      />
       }
       <SlideshowInterface
         projectIndex={ProjectIndex}
@@ -44,11 +43,29 @@ export async function getStaticProps(context) {
   const projects = await res_projects.json();
   const media = await res_media.json();
   const files = await res_files.json();
+  const props = {
+    media: [...media.data],
+    projects: [...projects.data],
+    files: [...files.data],
+  };
+  const projects_clean = props.projects.map((project) => {
+    const slides = project.slides.map(
+      (slide) =>
+        props.media.filter((media) => (media.id === slide ? true : false))[0]
+    );
+    const project_clean = {
+      ...project,
+      slides: slides,
+    };
+    return project_clean;
+  });
+
   return {
     props: {
       media: [...media.data],
       projects: [...projects.data],
       files: [...files.data],
+      projects_clean: [...projects_clean],
     }, // will be passed to the page component as props
   };
 }

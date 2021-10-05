@@ -35,6 +35,7 @@ function SlideshowInterface({
       };
     }
   }
+  //
 
   function findNextElement(
     indexOfElement,
