@@ -1,6 +1,11 @@
 .container{
   display: flex;
   width: fit-content;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
-.img{
+.project{
+  display: flex;
+
 }

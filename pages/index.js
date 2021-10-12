@@ -1,9 +1,12 @@
 import Slideshow from "./components/Slideshow";
 import SlideshowInterface from "./components/SlideshowInterface";
+import cleanProjectsData from "./helper/cleanProjectsData";
 import { useState } from "react";
 
+const urlOfApi = "https://sandy.uber.space/";
+
 function App(props) {
-  const { projects, projects_clean, media, files } = props;
+  const { projects } = props;
   const numberOfProjects = projects.length;
   const slidesPerProject = projects.map((project) => project.slides.length);
   const [ProjectIndex, setProjectIndex] = useState(0);
@@ -15,16 +18,13 @@ function App(props) {
     setProjectIndex(newProjectIndex);
   }
   return (
-    <div>
+    <div id="webPage">
       <Slideshow
-        projectIndex={ProjectIndex}
+        assetsApi={urlOfApi + "assets/"}
         slideIndex={SlideIndex}
-        projects_clean={projects_clean}
+        projectIndex={ProjectIndex}
         projects={projects}
-        media={media}
-        files={files}
       />
-      }
       <SlideshowInterface
         projectIndex={ProjectIndex}
         numberOfProjects={numberOfProjects}
@@ -36,36 +36,16 @@ function App(props) {
     </div>
   );
 }
-export async function getStaticProps(context) {
-  const res_projects = await fetch(`https://sandy.uber.space/items/project`);
-  const res_media = await fetch(`https://sandy.uber.space/items/media`);
-  const res_files = await fetch("https://sandy.uber.space/files");
+export async function getStaticProps() {
+  const res_projects = await fetch(urlOfApi + `items/project`);
+  const res_media = await fetch(urlOfApi + `items/media`);
   const projects = await res_projects.json();
   const media = await res_media.json();
-  const files = await res_files.json();
-  const props = {
-    media: [...media.data],
-    projects: [...projects.data],
-    files: [...files.data],
-  };
-  const projects_clean = props.projects.map((project) => {
-    const slides = project.slides.map(
-      (slide) =>
-        props.media.filter((media) => (media.id === slide ? true : false))[0]
-    );
-    const project_clean = {
-      ...project,
-      slides: slides,
-    };
-    return project_clean;
-  });
+  const cleanedProjectsData = cleanProjectsData(projects.data, media.data);
 
   return {
     props: {
-      media: [...media.data],
-      projects: [...projects.data],
-      files: [...files.data],
-      projects_clean: [...projects_clean],
+      projects: [...cleanedProjectsData],
     }, // will be passed to the page component as props
   };
 }
