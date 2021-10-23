@@ -1,44 +1,60 @@
-import Slideshow from "./components/Slideshow";
+import MainView from "./components/MainView";
 import SlideshowInterface from "./components/SlideshowInterface";
 import cleanProjectsData from "./helper/cleanProjectsData";
+import counter from "./helper/counter";
 import { useState } from "react";
 
-const urlOfApi = "https://sandy.uber.space/";
+const api = {
+  assets: "https://sandy.uber.space/assets/",
+  media: "https://sandy.uber.space/items/media",
+  projects: "https://sandy.uber.space/items/project",
+};
 
-function App(props) {
-  const { projects } = props;
+function App({ projects }) {
   const numberOfProjects = projects.length;
   const slidesPerProject = projects.map((project) => project.slides.length);
-  const [ProjectIndex, setProjectIndex] = useState(0);
-  const [SlideIndex, setSlideIndex] = useState(0);
+  const [currentSlideIndex, setCurrentSlide] = useState(0);
+  const [currentProjectIndex, setCurrentProject] = useState(0);
   function handleSlideChange(newSlideIndex) {
-    setSlideIndex(newSlideIndex);
+    setCurrentSlide(newSlideIndex);
   }
   function handleProjectChange(newProjectIndex) {
-    setProjectIndex(newProjectIndex);
+    setCurrentProject(newProjectIndex);
   }
+  const currentProjectIndexes = [
+    counter(currentProjectIndex - 1, numberOfProjects),
+    counter(currentProjectIndex, numberOfProjects),
+    counter(currentProjectIndex + 1, numberOfProjects),
+  ];
   return (
-    <div id="webPage">
-      <Slideshow
-        assetsApi={urlOfApi + "assets/"}
-        slideIndex={SlideIndex}
-        projectIndex={ProjectIndex}
-        projects={projects}
-      />
+    <>
+      <div id="webPage">
+        <MainView
+          id="MainView"
+          currentProjectIndexes={currentProjectIndexes}
+          currentSlideIndex={currentSlideIndex}
+          numberOfProjects={numberOfProjects}
+          projects={projects}
+          slidesPerProject={slidesPerProject}
+        />
+      </div>
       <SlideshowInterface
-        projectIndex={ProjectIndex}
-        numberOfProjects={numberOfProjects}
         handleProjectChange={handleProjectChange}
-        slideIndex={SlideIndex}
-        slidesPerProject={slidesPerProject}
         handleSlideChange={handleSlideChange}
+        currentSlideIndex={counter(
+          currentSlideIndex,
+          slidesPerProject[currentProjectIndex]
+        )}
+        currentProjectIndex={currentProjectIndexes[1]}
+        numberOfProjects={numberOfProjects}
+        slidesPerProject={slidesPerProject}
       />
-    </div>
+    </>
   );
 }
 export async function getStaticProps() {
-  const res_projects = await fetch(urlOfApi + `items/project`);
-  const res_media = await fetch(urlOfApi + `items/media`);
+  const res_projects = await fetch(api.projects);
+  const res_media = await fetch(api.media);
   const projects = await res_projects.json();
   const media = await res_media.json();
   const cleanedProjectsData = cleanProjectsData(projects.data, media.data);

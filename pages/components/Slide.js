@@ -1,11 +1,11 @@
 import Image from "next/image";
 import styles from "./Slide.module.scss";
-function Slide(props) {
+function Slide({ slide }) {
   return (
-    <div className={styles.container + " slide"}>
+    <div className={styles.Slide}>
       <Image
-        className={styles.img}
-        src={props.slideUrl}
+        key={slide.id}
+        src={slide.file}
         layout="fill"
         objectFit="cover"
         alt="hello"

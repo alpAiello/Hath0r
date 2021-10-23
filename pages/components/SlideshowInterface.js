@@ -5,69 +5,19 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import styles from "./SlideshowInterface.module.scss";
+import counter from "../helper/counter";
+import { gsap } from "gsap";
 
 function SlideshowInterface({
-  slideIndex,
-  projectIndex,
-  slidesPerProject,
+  currentProjectIndex,
+  currentSlideIndex,
   numberOfProjects,
-  handleProjectChange,
+  slidesPerProject,
   handleSlideChange,
+  handleProjectChange,
 }) {
-  const numberOfSlides = slidesPerProject[projectIndex];
-
   function resetSlideIndex() {
     return 0;
-  }
-
-  function getStepConfiguration(stepDirection, arrayLength) {
-    if (stepDirection === "next") {
-      return {
-        startIndex: 0,
-        lastIndex: arrayLength - 1,
-        normalStep: +1,
-      };
-    } else if (stepDirection === "prev") {
-      return {
-        startIndex: arrayLength - 1,
-        lastIndex: 0,
-        normalStep: -1,
-      };
-    }
-  }
-
-  function findNextElement(
-    indexOfElement,
-    { startIndex, lastIndex, normalStep }
-  ) {
-    return indexOfElement === lastIndex
-      ? startIndex
-      : indexOfElement + normalStep;
-  }
-
-  function getNextSlide() {
-    return findNextElement(
-      slideIndex,
-      getStepConfiguration("next", numberOfSlides)
-    );
-  }
-  function getPrevSlide() {
-    return findNextElement(
-      slideIndex,
-      getStepConfiguration("prev", numberOfSlides)
-    );
-  }
-  function getNextProject() {
-    return findNextElement(
-      projectIndex,
-      getStepConfiguration("next", numberOfProjects)
-    );
-  }
-  function getPrevProject() {
-    return findNextElement(
-      projectIndex,
-      getStepConfiguration("prev", numberOfProjects)
-    );
   }
 
   return (
@@ -75,14 +25,31 @@ function SlideshowInterface({
       <button
         id={styles.nextSlideButton}
         className={styles.slideShowButton}
-        onClick={() => handleSlideChange(getNextSlide)}
+        onClick={() => {
+          /*
+          gsap.to("#webPage", { x: -100 + "vw", duration: 1 });
+*/
+          handleSlideChange(
+            counter(
+              currentSlideIndex + 1,
+              slidesPerProject[currentProjectIndex]
+            )
+          );
+        }}
       >
         <MdKeyboardArrowRight />
       </button>
       <button
         id={styles.prevSlideButton}
         className={styles.slideShowButton}
-        onClick={() => handleSlideChange(getPrevSlide)}
+        onClick={() => {
+          handleSlideChange(
+            counter(
+              currentSlideIndex - 1,
+              slidesPerProject[currentProjectIndex]
+            )
+          );
+        }}
       >
         <MdKeyboardArrowLeft />
       </button>
@@ -90,8 +57,10 @@ function SlideshowInterface({
         id={styles.nextProjectButton}
         className={styles.slideShowButton}
         onClick={() => {
-          handleProjectChange(getNextProject);
-          handleSlideChange(resetSlideIndex);
+          handleProjectChange(
+            counter(currentProjectIndex + 1, numberOfProjects)
+          );
+          handleSlideChange(resetSlideIndex());
         }}
       >
         <MdKeyboardArrowDown />
@@ -100,8 +69,10 @@ function SlideshowInterface({
         id={styles.prevProjectButton}
         className={styles.slideShowButton}
         onClick={() => {
-          handleProjectChange(getPrevProject);
-          handleSlideChange(resetSlideIndex);
+          handleProjectChange(
+            counter(currentProjectIndex - 1, numberOfProjects)
+          );
+          handleSlideChange(resetSlideIndex());
         }}
       >
         <MdKeyboardArrowUp />
