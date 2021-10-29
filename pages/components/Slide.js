@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from "./Slide.module.scss";
 function Slide({ slide }) {
   return (
-    <div className={styles.Slide}>
+    <div className={styles.Slide + " Slide"}>
       <Image
         key={slide.id}
         src={slide.file}

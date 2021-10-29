@@ -10,6 +10,7 @@ function MainView({ currentProjectIndexes, slidesPerProject, ...props }) {
       <Project
         projectIndex={currentProjectIndexes[1]}
         numberOfSlides={slidesPerProject[currentProjectIndexes[1]]}
+        visibleProject={true}
         {...props}
       />
       <Project

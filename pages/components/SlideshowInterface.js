@@ -6,7 +6,6 @@ import {
 } from "react-icons/md";
 import styles from "./SlideshowInterface.module.scss";
 import counter from "../helper/counter";
-import { gsap } from "gsap";
 
 function SlideshowInterface({
   currentProjectIndex,
@@ -26,9 +25,6 @@ function SlideshowInterface({
         id={styles.nextSlideButton}
         className={styles.slideShowButton}
         onClick={() => {
-          /*
-          gsap.to("#webPage", { x: -100 + "vw", duration: 1 });
-*/
           handleSlideChange(
             counter(
               currentSlideIndex + 1,
